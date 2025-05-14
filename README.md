@@ -120,7 +120,7 @@ numbers.sort(preserve);
 > ⚠️ **Note**: The `random()` and `randomly` functions produce biased results and are not suitable for
 > statistical or cryptographic applications. For proper random shuffling, use the Fisher-Yates algorithm instead.
 
-Why include a `preserve` comparator that seemingly does nothing? Because it serves as an "identity function" for comparators - useful when working with higher-order functions that require a comparator parameter, but you want to maintain the original order. Check out the practical examples in the [Advanced Sorting](#-advanced-sorting) section below to see this in action.
+Why include a `preserve` comparator that seemingly does nothing? Because it serves as an "identity function" for comparators - useful when working with higher-order functions that require a comparator parameter, but you want to maintain the original order. Check out the practical examples in the [Advanced Sorting](#%EF%B8%8F-advanced-sorting) section below to see this in action.
 
 ### 🔍 Sorting Objects by Properties
 

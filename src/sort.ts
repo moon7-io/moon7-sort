@@ -19,7 +19,7 @@
  * nums.sort(descending);
  *
  * // sort in ascending or descending order
- * nums.sort(dir(ASC));
+ * nums.sort(dir(Direction.Ascending));
  *
  * // sort in random order
  * nums.sort(random());
@@ -97,16 +97,6 @@ export type BigIntLike = bigint | { valueOf(): bigint };
 export type Ordinal = StringLike | NumberLike | BigIntLike;
 
 /**
- * Constant representing ascending sort order
- */
-export const ASC = true;
-
-/**
- * Constant representing descending sort order
- */
-export const DESC = false;
-
-/**
  * Creates a sorted array from an iterable using the provided comparator
  *
  * @typeParam T - The type of elements in the iterable
@@ -155,18 +145,68 @@ export function ascending<T>(a: T, b: T): number {
  * @returns Negative number if a > b, positive number if a < b, zero if equal
  */
 export function descending<T>(a: T, b: T): number {
-    return -ascending(a, b);
+    return a === b ? 0 : a > b ? -1 : 1;
+}
+
+/**
+ * A comparator that always returns 0, preserving the original order of elements
+ *
+ * This comparator can be used when you want to maintain the original order of elements
+ * in scenarios like group sorting, where you want to group items but not change their
+ * relative positions within groups.
+ *
+ * @example
+ * // Preserve original order when sorting
+ * const array = [3, 1, 4, 2];
+ * array.sort(preserve);
+ * // Result: [3, 1, 4, 2] (unchanged)
+ *
+ * @example
+ * // Group by category, but keep the original order within each group
+ * items.sort(group(item => item.category, ascending, preserve));
+ */
+export const preserve: Comparator<any> = () => 0;
+
+/**
+ * Enumeration representing sorting directions
+ *
+ * This enum provides semantic values for ascending and descending sort order.
+ * The numerical values are chosen so that truthy values (Ascending = 1) correspond
+ * to ascending order, and falsy values (Descending = 0) correspond to descending order.
+ *
+ * @example
+ * // Sort numbers in ascending order
+ * numbers.sort(dir(Direction.Ascending));
+ *
+ * @example
+ * // Sort numbers in descending order
+ * numbers.sort(dir(Direction.Descending));
+ */
+export enum Direction {
+    /**
+     * Represents descending sort order (largest to smallest)
+     */
+    Descending = 0,
+
+    /**
+     * Represents ascending sort order (smallest to largest)
+     */
+    Ascending = 1,
 }
 
 /**
  * Creates a comparator that sorts in the specified direction
  *
  * @typeParam T - The type of values being compared
- * @param isAscending - When true, sorts in ascending order; when false, in descending order
+ * @param isAscending - Direction to sort in
  * @returns A comparator function that sorts in the specified direction
+ *
+ * @remarks
+ * This is an overloaded function that accepts either a boolean or a Direction enum value.
+ * The implementation treats any truthy value as ascending and any falsy value as descending.
  */
-export function dir<T>(isAscending: boolean): Comparator<T> {
-    return isAscending ? ascending : descending;
+export function dir<T>(isAscending: boolean | Direction): Comparator<T> {
+    return !!isAscending ? ascending : descending;
 }
 
 /**

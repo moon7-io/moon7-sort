@@ -3,8 +3,7 @@ import {
     ascending,
     descending,
     dir,
-    ASC,
-    DESC,
+    Direction,
     random,
     randomly,
     natural,
@@ -18,6 +17,7 @@ import {
     group,
     conditional,
     sort,
+    preserve,
 } from "~/index";
 
 describe("ascending", () => {
@@ -59,12 +59,12 @@ describe("descending", () => {
 describe("dir", () => {
     test("ascending direction", () => {
         const nums = [3, 1, 4, 2];
-        expect([...nums].sort(dir(ASC))).toEqual([1, 2, 3, 4]);
+        expect([...nums].sort(dir(Direction.Ascending))).toEqual([1, 2, 3, 4]);
     });
 
     test("descending direction", () => {
         const nums = [3, 1, 4, 2];
-        expect([...nums].sort(dir(DESC))).toEqual([4, 3, 2, 1]);
+        expect([...nums].sort(dir(Direction.Descending))).toEqual([4, 3, 2, 1]);
     });
 });
 
@@ -954,5 +954,41 @@ describe("sort", () => {
     test("handles empty iterables", () => {
         expect(sort([])).toEqual([]);
         expect(sort(new Set())).toEqual([]);
+    });
+});
+
+describe("preserve", () => {
+    test("basic comparison always returns 0", () => {
+        expect(preserve(1, 2)).toBe(0);
+        expect(preserve(2, 1)).toBe(0);
+        expect(preserve("a", "b")).toBe(0);
+        expect(preserve(true, false)).toBe(0);
+        expect(preserve({}, {})).toBe(0);
+    });
+
+    test("sorting with preserve maintains original order", () => {
+        const nums = [3, 1, 4, 2];
+        const originalOrder = [...nums];
+
+        // Sort using preserve comparator
+        const result = [...nums].sort(preserve);
+
+        // Should maintain original order
+        expect(result).toEqual(originalOrder);
+    });
+
+    test("can be used in composition with other comparators", () => {
+        const items = [
+            { id: 1, category: "A" },
+            { id: 2, category: "B" },
+            { id: 3, category: "A" },
+        ];
+
+        // Group by category, but don't order items within groups
+        const result = [...items].sort(group(item => item.category, ascending, preserve));
+
+        // Items should be grouped by category but maintain original order within groups
+        // IDs 1 and 3 are in category A, ID 2 is in category B
+        expect(result.map(item => item.id)).toEqual([1, 3, 2]);
     });
 });

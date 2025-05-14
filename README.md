@@ -270,31 +270,31 @@ numbers.sort(conditional(
 
 The library provides these key functions:
 
-| API                                        | Description                                                              |
-| ------------------------------------------ | ------------------------------------------------------------------------ |
-| **🚀 Core**                                 |                                                                          |
-| `sort(items, cmp?)`                        | Creates a sorted copy of an iterable                                     |
-| `Direction.Ascending`                      | Enum value representing ascending sort order                             |
-| `Direction.Descending`                     | Enum value representing descending sort order                            |
-| **⬆️ Basic Comparators**                    |                                                                          |
-| `ascending`                                | Compares values in ascending order                                       |
-| `descending`                               | Compares values in descending order                                      |
-| `preserve`                                 | Identity comparator that always returns 0, preserving original order     |
-| `dir(isAscending)`                         | Creates a comparator for a specific direction                            |
-| **🎲 Shuffle Comparators**                  |                                                                          |
-| `random(p)`                                | Creates a comparator that sorts randomly with given probability (biased) |
-| `randomly`                                 | Pre-configured random sort comparator with default settings (biased)     |
-| **📊 String Comparators**                   |                                                                          |
-| `natural(sensitivity?)`                    | Creates a comparator for natural string sorting                          |
-| `naturally`                                | Pre-configured natural sort comparator with default settings             |
-| **🧩 Complex Comparators**                  |                                                                          |
-| `by(map, cmp?)`                            | Creates a comparator based on a property or derived value                |
-| `order(...fns)`                            | Combines multiple comparators in sequence                                |
-| `where(predicate, cmp?)`                   | Creates a comparator that prioritizes items matching a predicate         |
-| `nullable(get, cmp?)`                      | Creates a comparator that prioritizes null/undefined values              |
-| `group(selector, groupOrder?, itemOrder?)` | Groups items and orders both groups and items within groups              |
-| `conditional(condition, ifTrue, ifFalse)`  | Selects between comparators based on a condition                         |
-| `reverse(fn, ignore?)`                     | Reverses the result of another comparator                                |
+| API                                        | Description                                                      |
+| ------------------------------------------ | ---------------------------------------------------------------- |
+| **🚀 Core**                                 |                                                                  |
+| `sort(items, cmp?)`                        | Creates a sorted copy of an iterable                             |
+| `Direction.Ascending`                      | Enum value representing ascending sort order                     |
+| `Direction.Descending`                     | Enum value representing descending sort order                    |
+| **⬆️ Basic Comparators**                    |                                                                  |
+| `ascending`                                | Compares values in ascending order                               |
+| `descending`                               | Compares values in descending order                              |
+| `preserve`                                 | Identity comparator that does nothing, preserving original order |
+| `dir(isAscending)`                         | Creates a comparator for a specific direction                    |
+| **🎲 Shuffle Comparators**                  |                                                                  |
+| `random(p)`                                | Creates a comparator that sorts randomly with given probability  |
+| `randomly`                                 | Pre-configured random sort comparator with p=0.5                 |
+| **📊 String Comparators**                   |                                                                  |
+| `natural(sensitivity?)`                    | Creates a comparator for natural string sorting                  |
+| `naturally`                                | Pre-configured natural sort comparator with default settings     |
+| **🧩 Complex Comparators**                  |                                                                  |
+| `by(map, cmp?)`                            | Creates a comparator based on a property or derived value        |
+| `order(...fns)`                            | Combines multiple comparators in sequence                        |
+| `where(predicate, cmp?)`                   | Creates a comparator that prioritizes items matching a predicate |
+| `nullable(get, cmp?)`                      | Creates a comparator that prioritizes null/undefined values      |
+| `group(selector, groupOrder?, itemOrder?)` | Groups items and orders both groups and items within groups      |
+| `conditional(condition, ifTrue, ifFalse)`  | Selects between comparators based on a condition                 |
+| `reverse(fn, ignore?)`                     | Reverses the result of another comparator                        |
 
 Note that all **comparators** are functions in the form of `(a, b) => number`, which is omitted in the table above for brevity. For example, `ascending` is actually a function `ascending(a, b)`.
 

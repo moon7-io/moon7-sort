@@ -83,7 +83,7 @@ pnpm add @moon7/sort
 ### 🔄 Basic Sorting
 
 ```typescript
-import { ascending, descending, dir, ASC, DESC, random } from '@moon7/sort';
+import { ascending, descending, dir, ASC, DESC, random, randomly } from '@moon7/sort';
 
 // Sort an array in ascending order
 const numbers = [3, 1, 4, 2];
@@ -99,8 +99,15 @@ numbers.sort(dir(ASC));  // ascending
 numbers.sort(dir(DESC)); // descending
 
 // Sort in random order
-numbers.sort(random());
+// Note: this has bias, not for statistical applications
+numbers.sort(random(0.5));
+
+// Same as above, with default probability threshold
+numbers.sort(randomly);
 ```
+
+> ⚠️ **Note**: The `random()` and `randomly` functions produce biased results and are not suitable for
+> statistical or cryptographic applications. For proper random shuffling, use the Fisher-Yates algorithm instead.
 
 ### 🔍 Sorting Objects by Properties
 
@@ -139,12 +146,16 @@ people.sort(order(
 ### 📊 Natural Sorting
 
 ```typescript
-import { natural, by, Sensitivity } from '@moon7/sort';
+import { natural, naturally, by, Sensitivity } from '@moon7/sort';
 
 const versions = ['v1.10', 'v1.2', 'v1.1'];
 
 // Sort with natural comparison (1.2 comes before 1.10)
 versions.sort(natural());
+// ['v1.1', 'v1.2', 'v1.10']
+
+// Using pre-configured naturally constant (same as natural() with default settings)
+versions.sort(naturally);
 // ['v1.1', 'v1.2', 'v1.10']
 
 // Sort strings differently based on their case sensitivity
@@ -157,7 +168,7 @@ const files = [
     { name: 'file10.txt' },
     { name: 'file2.txt' }
 ];
-files.sort(by(f => f.name, natural()));
+files.sort(by(f => f.name, naturally));
 // [
 //     { name: 'file2.txt' },
 //     { name: 'file10.txt' }
@@ -228,21 +239,23 @@ numbers.sort(conditional(
 
 The library provides these key functions:
 
-| Function                                   | Description                                                      |
-| ------------------------------------------ | ---------------------------------------------------------------- |
-| `ascending(a, b)`                          | Compares values in ascending order                               |
-| `descending(a, b)`                         | Compares values in descending order                              |
-| `dir(isAscending)`                         | Creates a comparator for a specific direction                    |
-| `random()`                                 | Creates a comparator that sorts randomly                         |
-| `natural(sensitivity?)`                    | Creates a comparator for natural string sorting                  |
-| `by(map, cmp?)`                            | Creates a comparator based on a property or derived value        |
-| `where(predicate, cmp?)`                   | Creates a comparator that prioritizes items matching a predicate |
-| `nullable(get, cmp?)`                      | Creates a comparator that prioritizes null/undefined values      |
-| `group(selector, groupOrder?, itemOrder?)` | Groups items and orders both groups and items within groups      |
-| `order(...fns)`                            | Combines multiple comparators in sequence                        |
-| `reverse(fn, ignore?)`                     | Reverses the result of another comparator                        |
-| `conditional(condition, ifTrue, ifFalse)`  | Selects between comparators based on a condition                 |
-| `sort(items, cmp?)`                        | Creates a sorted copy of an iterable                             |
+| Function                                   | Description                                                              |
+| ------------------------------------------ | ------------------------------------------------------------------------ |
+| `ascending(a, b)`                          | Compares values in ascending order                                       |
+| `descending(a, b)`                         | Compares values in descending order                                      |
+| `dir(isAscending)`                         | Creates a comparator for a specific direction                            |
+| `random(p)`                                | Creates a comparator that sorts randomly with given probability (biased) |
+| `randomly`                                 | Pre-configured random sort comparator with default settings (biased)     |
+| `natural(sensitivity?)`                    | Creates a comparator for natural string sorting                          |
+| `naturally`                                | Pre-configured natural sort comparator with default settings             |
+| `by(map, cmp?)`                            | Creates a comparator based on a property or derived value                |
+| `where(predicate, cmp?)`                   | Creates a comparator that prioritizes items matching a predicate         |
+| `nullable(get, cmp?)`                      | Creates a comparator that prioritizes null/undefined values              |
+| `group(selector, groupOrder?, itemOrder?)` | Groups items and orders both groups and items within groups              |
+| `order(...fns)`                            | Combines multiple comparators in sequence                                |
+| `reverse(fn, ignore?)`                     | Reverses the result of another comparator                                |
+| `conditional(condition, ifTrue, ifFalse)`  | Selects between comparators based on a condition                         |
+| `sort(items, cmp?)`                        | Creates a sorted copy of an iterable                                     |
 
 ## 🔗 Related Libraries
 

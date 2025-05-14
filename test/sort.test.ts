@@ -6,7 +6,9 @@ import {
     ASC,
     DESC,
     random,
+    randomly,
     natural,
+    naturally,
     by,
     order,
     reverse,
@@ -93,12 +95,60 @@ describe("random", () => {
             Math.random = originalRandom;
         }
     });
+
+    test("randomly constant uses the default probability", () => {
+        // Mock Math.random to ensure it actually shuffles
+        const originalRandom = Math.random;
+        let callCount = 0;
+        Math.random = () => {
+            callCount++;
+            // Return values that will definitely shuffle the array
+            return callCount % 2 === 0 ? 0.8 : 0.2;
+        };
+
+        try {
+            const nums = [1, 2, 3, 4, 5];
+            const sorted = [...nums].sort(randomly);
+
+            // Ensure it has the same elements (but in different order)
+            expect(sorted).toHaveLength(nums.length);
+            expect([...sorted].sort(ascending)).toEqual(nums);
+
+            // Verify the order has changed
+            const isSameOrder = nums.every((num, i) => sorted[i] === num);
+            expect(isSameOrder).toBe(false);
+
+            // Should be equivalent to random() with default settings
+            const randomlyResult = [...nums].sort(randomly);
+            const randomResult = [...nums].sort(random(0.5));
+
+            // Reset the mock to ensure consistent results for this comparison
+            callCount = 0;
+
+            // The behavior should be the same, though the actual results will be random
+            expect(randomlyResult.length).toEqual(randomResult.length);
+            expect([...randomlyResult].sort(ascending)).toEqual([...randomResult].sort(ascending));
+        } finally {
+            // Restore original Math.random
+            Math.random = originalRandom;
+        }
+    });
 });
 
 describe("natural", () => {
     test("natural ordering of strings with numbers", () => {
         const strs = ["foo10", "foo2", "foo1"];
         expect([...strs].sort(natural())).toEqual(["foo1", "foo2", "foo10"]);
+    });
+
+    test("naturally constant uses default sensitivity", () => {
+        const strs = ["foo10", "foo2", "foo1"];
+        expect([...strs].sort(naturally)).toEqual(["foo1", "foo2", "foo10"]);
+
+        // Should be equivalent to natural() with default settings
+        const naturallyResult = [...strs].sort(naturally);
+        const naturalResult = [...strs].sort(natural());
+        expect(naturallyResult).toEqual(naturalResult);
     });
 
     test("case sensitivity options", () => {
@@ -347,7 +397,7 @@ describe("nullable", () => {
         const result = [...items].sort(
             nullable(
                 x => x.value,
-                by(x => x.value!)
+                by(x => x.value || 0)
             )
         );
 
@@ -375,7 +425,7 @@ describe("nullable", () => {
             reverse(
                 nullable(
                     x => x.value,
-                    by(x => x.value!, descending)
+                    by(x => x.value || 0, descending)
                 )
             )
         );
@@ -440,7 +490,7 @@ describe("nullable", () => {
         const result = [...items].sort(
             nullable(
                 x => x.name,
-                by(x => x.name!, descending)
+                by(x => x.name || "", descending)
             )
         );
 

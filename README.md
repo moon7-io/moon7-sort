@@ -276,6 +276,10 @@ The library provides these key functions:
 | `sort(items, cmp?)`                        | Creates a sorted copy of an iterable                             |
 | `Direction.Ascending`                      | Enum value representing ascending sort order                     |
 | `Direction.Descending`                     | Enum value representing descending sort order                    |
+| `Sensitivity.Base`                         | Enum value for different bases unequal, cases/accents equal      |
+| `Sensitivity.Accent`                       | Enum value for accents/bases unequal, cases equal                |
+| `Sensitivity.Case`                         | Enum value for cases/bases unequal, accents equal                |
+| `Sensitivity.Variant`                      | Enum value for all variations considered unequal                 |
 | **⬆️ Basic Comparators**                    |                                                                  |
 | `ascending`                                | Compares values in ascending order                               |
 | `descending`                               | Compares values in descending order                              |

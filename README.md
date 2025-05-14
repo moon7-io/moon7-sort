@@ -7,9 +7,9 @@ A lightweight, functional utility library providing composable sorting functions
 
 ## ✨ Features
 
-- 🔄 **Basic Comparators** - Ascending, descending, and random sorting functions
-- 🔍 **Property-based Sorting** - Sort by specific object properties
-- 🔀 **Composable API** - Combine multiple sort criteria effortlessly
+- ⬆️ **Basic Comparators** - Ascending, descending, and random sorting functions
+- 🧩 **Property-based Sorting** - Sort by specific object properties
+- 🔄 **Composable API** - Combine multiple sort criteria effortlessly
 - 📊 **Natural Sorting** - Intelligent string sorting with proper handling of numbers
 - ⛓️ **Chaining** - Order, group, and prioritize items with composable functions
 
@@ -87,7 +87,7 @@ pnpm add @moon7/sort
 ### 🔄 Basic Sorting
 
 ```typescript
-import { ascending, descending, dir, ASC, DESC, random, randomly } from '@moon7/sort';
+import { ascending, descending, preserve, dir, Direction, random, randomly } from '@moon7/sort';
 
 // Sort an array in ascending order
 const numbers = [3, 1, 4, 2];
@@ -98,9 +98,13 @@ numbers.sort(ascending);
 numbers.sort(descending);
 // [4, 3, 2, 1]
 
-// Sort using a direction flag (boolean)
-numbers.sort(dir(ASC));  // ascending
-numbers.sort(dir(DESC)); // descending
+// Sort using a direction enum
+numbers.sort(dir(Direction.Ascending));  // ascending
+numbers.sort(dir(Direction.Descending)); // descending
+
+// Sort using any truthy values
+numbers.sort(dir(true)); // ascending
+numbers.sort(dir(0)); // descending
 
 // Sort in random order
 // Note: this has bias, not for statistical applications
@@ -108,10 +112,15 @@ numbers.sort(random(0.5));
 
 // Same as above, with default probability threshold
 numbers.sort(randomly);
+
+// Sort using the identity function, which does nothing
+numbers.sort(preserve);
 ```
 
 > ⚠️ **Note**: The `random()` and `randomly` functions produce biased results and are not suitable for
 > statistical or cryptographic applications. For proper random shuffling, use the Fisher-Yates algorithm instead.
+
+Why include a `preserve` comparator that seemingly does nothing? Because it serves as an "identity function" for comparators - useful when working with higher-order functions that require a comparator parameter, but you want to maintain the original order. Check out the practical examples in the [Advanced Sorting](#-advanced-sorting) section below to see this in action.
 
 ### 🔍 Sorting Objects by Properties
 
@@ -182,7 +191,7 @@ files.sort(by(f => f.name, naturally));
 ### ⛓️ Advanced Sorting
 
 ```typescript
-import { where, nullable, group, reverse, conditional } from '@moon7/sort';
+import { where, nullable, group, reverse, conditional, preserve } from '@moon7/sort';
 
 // Sort active items first, then by name
 const items = [
@@ -197,6 +206,24 @@ items.sort(where(x => x.active, by(x => x.name)));
 //     { name: 'Task 4', active: true },
 //     { name: 'Task 1', active: false },
 //     { name: 'Task 3', active: false },
+// ]
+
+// Preserve original order when sorting
+const nums = [3, 1, 4, 2];
+nums.sort(preserve);
+// [3, 1, 4, 2] (unchanged)
+
+// Group by category, but preserve original order within each group
+const categoryItems = [
+    { id: 1, category: 'A' },
+    { id: 2, category: 'B' },
+    { id: 3, category: 'A' },
+];
+categoryItems.sort(group(item => item.category, ascending, preserve));
+// [
+//     { id: 1, category: 'A' },
+//     { id: 3, category: 'A' },
+//     { id: 2, category: 'B' },
 // ]
 
 // Sort with null values first
@@ -243,23 +270,35 @@ numbers.sort(conditional(
 
 The library provides these key functions:
 
-| Function                                   | Description                                                              |
+| API                                        | Description                                                              |
 | ------------------------------------------ | ------------------------------------------------------------------------ |
-| `ascending(a, b)`                          | Compares values in ascending order                                       |
-| `descending(a, b)`                         | Compares values in descending order                                      |
+| **🚀 Core**                                 |                                                                          |
+| `sort(items, cmp?)`                        | Creates a sorted copy of an iterable                                     |
+| `Direction.Ascending`                      | Enum value representing ascending sort order                             |
+| `Direction.Descending`                     | Enum value representing descending sort order                            |
+| **⬆️ Basic Comparators**                    |                                                                          |
+| `ascending`                                | Compares values in ascending order                                       |
+| `descending`                               | Compares values in descending order                                      |
+| `preserve`                                 | Identity comparator that always returns 0, preserving original order     |
 | `dir(isAscending)`                         | Creates a comparator for a specific direction                            |
+| **🎲 Shuffle Comparators**                  |                                                                          |
 | `random(p)`                                | Creates a comparator that sorts randomly with given probability (biased) |
 | `randomly`                                 | Pre-configured random sort comparator with default settings (biased)     |
+| **📊 String Comparators**                   |                                                                          |
 | `natural(sensitivity?)`                    | Creates a comparator for natural string sorting                          |
 | `naturally`                                | Pre-configured natural sort comparator with default settings             |
+| **🧩 Complex Comparators**                  |                                                                          |
 | `by(map, cmp?)`                            | Creates a comparator based on a property or derived value                |
+| `order(...fns)`                            | Combines multiple comparators in sequence                                |
 | `where(predicate, cmp?)`                   | Creates a comparator that prioritizes items matching a predicate         |
 | `nullable(get, cmp?)`                      | Creates a comparator that prioritizes null/undefined values              |
 | `group(selector, groupOrder?, itemOrder?)` | Groups items and orders both groups and items within groups              |
-| `order(...fns)`                            | Combines multiple comparators in sequence                                |
-| `reverse(fn, ignore?)`                     | Reverses the result of another comparator                                |
 | `conditional(condition, ifTrue, ifFalse)`  | Selects between comparators based on a condition                         |
-| `sort(items, cmp?)`                        | Creates a sorted copy of an iterable                                     |
+| `reverse(fn, ignore?)`                     | Reverses the result of another comparator                                |
+
+Note that all **comparators** are functions in the form of `(a, b) => number`, which is omitted in the table above for brevity. For example, `ascending` is actually a function `ascending(a, b)`.
+
+Likewise, `by(map, cmp?)` is a function `by(map, cmp?)(a, b)`, as it is a higher-order comparator. Any parameter that expects a comparator can accept these functions directly.
 
 ## 🔗 Related Libraries
 

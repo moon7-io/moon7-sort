@@ -41,7 +41,7 @@ list.sort(ascending);
 Most functions in this library are higher-order functions - they accept other functions as arguments and return new functions, enabling powerful composition patterns.
 
 ```typescript
-import { by, order, natural } from "@moon7/sort";
+import { by, order, naturally, descending } from "@moon7/sort";
 
 // Sort by name, ascending
 list.sort(by(x => x.name));
@@ -54,16 +54,20 @@ list.sort(by(x => x.name, descending));
 // const by = (map, cmp: Comparator<T> = ascending): Comparator<T> => (a, b) => cmp(map(a), map(b));
 
 // Combining multiple sort criteria
-list.sort(order(
-    by(x => x.name, natural()),
-    by(x => x.age, descending),
-    by(x => x.lastLogin),
-));
+// Notice how this reads as a declaration of our sorting requirements
+list.sort(
+    order(
+        by(x => x.name, naturally),
+        by(x => x.age, descending),
+        by(x => x.lastLogin),
+    )
+);
 
 // How it works:
 // order takes multiple comparators and returns a new comparator that applies them in sequence
 ```
 
+Traditional imperative approach would require nested if statements or complex logic. With functional composition, we can express the sorting intent declaratively.
 
 ## 📦 Installation
 

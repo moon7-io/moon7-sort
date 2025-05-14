@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@moon7/sort.svg)](https://www.npmjs.com/package/@moon7/sort)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A lightweight, powerful utility library for sorting arrays and collections in JavaScript and TypeScript applications.
+A lightweight, functional utility library providing composable sorting functions for arrays and collections in JavaScript and TypeScript applications.
 
 ## ✨ Features
 

@@ -279,7 +279,7 @@ The library provides these key functions:
 | **⬆️ Basic Comparators**                    |                                                                  |
 | `ascending`                                | Compares values in ascending order                               |
 | `descending`                               | Compares values in descending order                              |
-| `preserve`                                 | Identity comparator that does nothing, preserving original order |
+| `preserve`                                 | Identity comparator that preserves original order                |
 | `dir(isAscending)`                         | Creates a comparator for a specific direction                    |
 | **🎲 Shuffle Comparators**                  |                                                                  |
 | `random(p)`                                | Creates a comparator that sorts randomly with given probability  |

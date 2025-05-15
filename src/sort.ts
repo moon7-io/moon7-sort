@@ -32,10 +32,10 @@
  * // sort by year, descending
  * data.sort(by(x => x.year, descending));
  * // alternatively,
- * data.sort(reverse(by(x => x.year)));
+ * data.sort(flip(by(x => x.year)));
  *
  * // sort by year, with a variable that controls ascending/descending
- * data.sort(reverse(by(x => x.year), isAscending));
+ * data.sort(flip(by(x => x.year), isAscending));
  * // alternatively,
  * data.sort(by(x => x.year, isAscending ? ascending : descending));
  *
@@ -43,7 +43,7 @@
  * data.sort(order(by(x => x.year), by(x => x.month)));
  *
  * // sort by year, then by month, but with results in reverse order
- * data.sort(reverse(order(by(x => x.year), by(x => x.month))));
+ * data.sort(flip(order(by(x => x.year), by(x => x.month))));
  *
  * // sort by nullable year, with null values at the top
  * data.sort(by(x => x.year || Number.NEGATIVE_INFINITY));
@@ -165,7 +165,7 @@ export function descending<T>(a: T, b: T): number {
  * // Group by category, but keep the original order within each group
  * items.sort(group(item => item.category, ascending, preserve));
  */
-export const preserve: Comparator<any> = () => 0;
+export const preserve: Comparator<any> = () => 1;
 
 /**
  * Enumeration representing sorting directions
@@ -441,13 +441,13 @@ export function order<T>(...fns: Comparator<T>[]): Comparator<T> {
 }
 
 /**
- * Creates a comparator that reverses the result of another comparator
+ * Creates a comparator that flips the result of another comparator
  *
  * @typeParam T - The type of values being compared
- * @param fn - The comparator to reverse
- * @param ignore - When true, returns the original comparator without reversal
- * @returns A comparator function with reversed results (unless ignore is true)
+ * @param fn - The comparator to flip
+ * @param ignore - When true, returns the original comparator without flipping
+ * @returns A comparator function with flipped results (unless ignore is true)
  */
-export function reverse<T>(fn: Comparator<T>, ignore?: boolean): Comparator<T> {
+export function flip<T>(fn: Comparator<T>, ignore?: boolean): Comparator<T> {
     return ignore ? fn : (a, b) => -fn(a, b);
 }

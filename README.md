@@ -41,7 +41,7 @@ list.sort(ascending);
 Most functions in this library are higher-order functions - they accept other functions as arguments and return new functions, enabling powerful composition patterns.
 
 ```typescript
-import { by, descending, naturally, reverse } from "@moon7/sort";
+import { by, descending, naturally, flip } from "@moon7/sort";
 
 // Sort by name, ascending (ascending is default)
 list.sort(by(x => x.name));
@@ -53,7 +53,7 @@ list.sort(by(x => x.name, descending));
 list.sort(by(x => x.name, naturally));
 
 // Sort by name, using natural string sorting, descending
-list.sort(by(x => x.name, reverse(naturally)));
+list.sort(by(x => x.name, flip(naturally)));
 
 // How it works:
 // `by` takes a mapping function and an optional comparator, returning a new comparator
@@ -131,7 +131,7 @@ numbers.sort(preserve);
 > ⚠️ **Note**: The `random()` and `randomly` functions produce biased results and are not suitable for
 > statistical or cryptographic applications. For proper random shuffling, use the Fisher-Yates algorithm instead.
 
-Why include a `preserve` comparator that seemingly does nothing? Because it serves as an "identity function" for comparators - useful when working with higher-order functions that require a comparator parameter, but you want to maintain the original order. Check out the practical examples in the [Advanced Sorting](#%EF%B8%8F-advanced-sorting) section below to see this in action.
+The `preserve` comparator treats everything as equal. Why include a `preserve` comparator that seemingly does nothing? Because it serves as an "identity function" for comparators - useful when working with higher-order functions that require a comparator parameter, but you want to maintain the original order. Check out the practical examples in the [Advanced Sorting](#%EF%B8%8F-advanced-sorting) section below to see this in action.
 
 ### 🔍 Sorting Objects by Properties
 
@@ -202,7 +202,7 @@ files.sort(by(f => f.name, naturally));
 ### ⛓️ Advanced Sorting
 
 ```typescript
-import { where, nullable, group, reverse, conditional, preserve } from '@moon7/sort';
+import { where, nullable, group, flip, conditional, preserve } from '@moon7/sort';
 
 // Sort active items first, then by name
 const items = [
@@ -309,7 +309,7 @@ The library provides these key functions:
 | `nullable(get, cmp?)`                      | Creates a comparator that prioritizes null/undefined values      |
 | `group(selector, groupOrder?, itemOrder?)` | Groups items and orders both groups and items within groups      |
 | `conditional(condition, ifTrue, ifFalse)`  | Selects between comparators based on a condition                 |
-| `reverse(fn, ignore?)`                     | Reverses the result of another comparator                        |
+| `flip(fn, ignore?)`                        | Flips the result of another comparator                           |
 
 Note that all **comparators** are functions in the form of `(a, b) => number`, which is omitted in the table above for brevity. For example, `ascending` is actually a function `ascending(a, b)`.
 

@@ -10,7 +10,7 @@ import {
     naturally,
     by,
     order,
-    reverse,
+    flip,
     Sensitivity,
     where,
     nullable,
@@ -218,17 +218,13 @@ describe("by", () => {
     });
 
     test("sort with reverse natural order", () => {
-        const files = [
-            { name: "file1.txt" },
-            { name: "file10.txt" },
-            { name: "file2.txt" }
-        ];
+        const files = [{ name: "file1.txt" }, { name: "file10.txt" }, { name: "file2.txt" }];
 
         // Sort by name using reversed natural order
-        expect([...files].sort(by(f => f.name, reverse(naturally)))).toEqual([
+        expect([...files].sort(by(f => f.name, flip(naturally)))).toEqual([
             { name: "file10.txt" },
             { name: "file2.txt" },
-            { name: "file1.txt" }
+            { name: "file1.txt" },
         ]);
     });
 });
@@ -261,28 +257,28 @@ describe("order", () => {
     });
 });
 
-describe("reverse", () => {
-    test("reverse a comparator", () => {
+describe("flip", () => {
+    test("flip a comparator", () => {
         const nums = [3, 1, 4, 2];
-        expect([...nums].sort(reverse(ascending))).toEqual([4, 3, 2, 1]);
+        expect([...nums].sort(flip(ascending))).toEqual([4, 3, 2, 1]);
     });
 
-    test("reverse with ignore flag", () => {
+    test("flip with ignore flag", () => {
         const nums = [3, 1, 4, 2];
-        expect([...nums].sort(reverse(ascending, true))).toEqual([1, 2, 3, 4]);
+        expect([...nums].sort(flip(ascending, true))).toEqual([1, 2, 3, 4]);
     });
 
-    test("reverse a composite comparator", () => {
+    test("flip a composite comparator", () => {
         const data = [
             { year: 2018, month: 12 },
             { year: 2019, month: 3 },
             { year: 2018, month: 1 },
         ];
 
-        // Reverse the order of: sort by year, then by month
+        // Flip the order of: sort by year, then by month
         expect(
             [...data].sort(
-                reverse(
+                flip(
                     order(
                         by(x => x.year),
                         by(x => x.month)
@@ -296,12 +292,12 @@ describe("reverse", () => {
         ]);
     });
 
-    test("reverse with variable condition", () => {
+    test("flip with variable condition", () => {
         const nums = [3, 1, 4, 2];
         const isAscending = true;
 
-        expect([...nums].sort(reverse(ascending, isAscending))).toEqual([1, 2, 3, 4]);
-        expect([...nums].sort(reverse(ascending, !isAscending))).toEqual([4, 3, 2, 1]);
+        expect([...nums].sort(flip(ascending, isAscending))).toEqual([1, 2, 3, 4]);
+        expect([...nums].sort(flip(ascending, !isAscending))).toEqual([4, 3, 2, 1]);
     });
 });
 
@@ -437,7 +433,7 @@ describe("nullable", () => {
 
         // Sort with non-null values first, then by value
         const result = [...items].sort(
-            reverse(
+            flip(
                 nullable(
                     x => x.value,
                     by(x => x.value || 0, descending)
@@ -1005,5 +1001,16 @@ describe("preserve", () => {
         // Items should be grouped by category but maintain original order within groups
         // IDs 1 and 3 are in category A, ID 2 is in category B
         expect(result.map(item => item.id)).toEqual([1, 3, 2]);
+    });
+
+    test("flip(preserve) still maintains original order", () => {
+        const nums = [3, 1, 4, 2];
+        const originalOrder = [...nums];
+
+        // Sort using flip(preserve) comparator
+        const result = [...nums].sort(flip(preserve));
+
+        // Should still maintain original order since preserve always returns 0
+        expect(result).toEqual(originalOrder);
     });
 });

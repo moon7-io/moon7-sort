@@ -7,13 +7,13 @@ A lightweight, functional utility library providing composable sorting functions
 
 ## ✨ Features
 
-- ⬆️ **Basic Comparators** - Ascending, descending, and random sorting functions
-- 🧩 **Property-based Sorting** - Sort by specific object properties
-- 🔄 **Composable API** - Combine multiple sort criteria effortlessly
-- 📊 **Natural Sorting** - Intelligent string sorting with proper handling of numbers
+- 🧱 **Basic Comparators** - Ascending, descending, and random sorting functions
+- 🏷️ **Property-based Sorting** - Sort by specific object properties
+- 🧩 **Composable API** - Combine multiple sort criteria effortlessly
+- 🧶 **Natural Sorting** - Intelligent string sorting with proper handling of numbers
 - ⛓️ **Chaining** - Order, group, and prioritize items with composable functions
 
-## 🧩 Motivation
+## 🧠 Motivation
 
 Sorting functions in JavaScript compare two values and return a numeric result: negative (-1) when the first value is less than the second, positive (1) when greater, and zero (0) when they're equal.
 
@@ -50,7 +50,7 @@ list.sort(by(x => x.name));
 list.sort(by(x => x.name, descending));
 
 // How it works:
-// by takes a mapping function and an optional comparator, returning a new comparator
+// `by` takes a mapping function and an optional comparator, returning a new comparator
 // const by = (map, cmp: Comparator<T> = ascending): Comparator<T> => (a, b) => cmp(map(a), map(b));
 
 // Combining multiple sort criteria
@@ -64,7 +64,7 @@ list.sort(
 );
 
 // How it works:
-// order takes multiple comparators and returns a new comparator that applies them in sequence
+// `order` takes multiple comparators and returns a new comparator that applies them in sequence
 ```
 
 Traditional imperative approach would require nested if statements or complex logic. With functional composition, we can express the sorting intent declaratively.
@@ -280,7 +280,7 @@ The library provides these key functions:
 | `Sensitivity.Accent`                       | Enum value for accents/bases unequal, cases equal                |
 | `Sensitivity.Case`                         | Enum value for cases/bases unequal, accents equal                |
 | `Sensitivity.Variant`                      | Enum value for all variations considered unequal                 |
-| **⬆️ Basic Comparators**                    |                                                                  |
+| **🧱 Basic Comparators**                    |                                                                  |
 | `ascending`                                | Compares values in ascending order                               |
 | `descending`                               | Compares values in descending order                              |
 | `preserve`                                 | Identity comparator that preserves original order                |
@@ -288,7 +288,7 @@ The library provides these key functions:
 | **🎲 Shuffle Comparators**                  |                                                                  |
 | `random(p)`                                | Creates a comparator that sorts randomly with given probability  |
 | `randomly`                                 | Pre-configured random sort comparator with p=0.5                 |
-| **📊 String Comparators**                   |                                                                  |
+| **🧶 String Comparators**                   |                                                                  |
 | `natural(sensitivity?)`                    | Creates a comparator for natural string sorting                  |
 | `naturally`                                | Pre-configured natural sort comparator with default settings     |
 | **🧩 Complex Comparators**                  |                                                                  |

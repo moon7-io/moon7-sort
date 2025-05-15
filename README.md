@@ -41,7 +41,7 @@ list.sort(ascending);
 Most functions in this library are higher-order functions - they accept other functions as arguments and return new functions, enabling powerful composition patterns.
 
 ```typescript
-import { by, order, naturally, descending } from "@moon7/sort";
+import { by, descending } from "@moon7/sort";
 
 // Sort by name, ascending
 list.sort(by(x => x.name));
@@ -52,9 +52,14 @@ list.sort(by(x => x.name, descending));
 // How it works:
 // `by` takes a mapping function and an optional comparator, returning a new comparator
 // const by = (map, cmp: Comparator<T> = ascending): Comparator<T> => (a, b) => cmp(map(a), map(b));
+```
 
-// Combining multiple sort criteria
-// Notice how this reads as a declaration of our sorting requirements
+Here's an example where you can combine multiple sorting criteria. Notice how this reads like a clear *declaration* of your sorting requirements.
+
+```typescript
+import { by, order, naturally, descending } from "@moon7/sort";
+
+// Sort by name naturally, then by age descending, then by lastLogin
 list.sort(
     order(
         by(x => x.name, naturally),

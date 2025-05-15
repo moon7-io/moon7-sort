@@ -216,6 +216,21 @@ describe("by", () => {
             { year: 2019 },
         ]);
     });
+
+    test("sort with reverse natural order", () => {
+        const files = [
+            { name: "file1.txt" },
+            { name: "file10.txt" },
+            { name: "file2.txt" }
+        ];
+
+        // Sort by name using reversed natural order
+        expect([...files].sort(by(f => f.name, reverse(naturally)))).toEqual([
+            { name: "file10.txt" },
+            { name: "file2.txt" },
+            { name: "file1.txt" }
+        ]);
+    });
 });
 
 describe("order", () => {

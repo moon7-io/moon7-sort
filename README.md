@@ -138,7 +138,11 @@ The `preserve` comparator always returns 1, which maintains the original order w
 
 The `reverse` comparator always returns -1, which reverses the original order when used with Array.sort(). This provides a simple way to reverse an array without changing its relative ordering logic otherwise.
 
-> ⚠️ **Note**: The behavior of `preserve` and `reverse` depends on sort stability. Prior to ES2019, JavaScript's `Array.prototype.sort()` was not required to be stable, and implementations varied across browsers and engines. For reliable results with these comparators, ensure you're using an ES2019+ environment or a JavaScript engine with stable sort implementation.
+> ⚠️ **Note on Stability**: The `preserve` and `reverse` comparators require a stable sorting algorithm to work correctly. Before ES2019, JavaScript's native `Array.prototype.sort()` wasn't guaranteed to be stable, with behavior varying across engines. For consistent results:
+> 
+> - Use an ES2019+ environment where stable sorting is guaranteed
+> - Or use this library's `sort()` function, which automatically detects and uses your engine's stable sort implementation or falls back to our stable `mergeSort()` implementation
+> - Or directly use `mergeSort()`, which is always stable regardless of environment
 
 Check out the practical examples in the [Advanced Sorting](#%EF%B8%8F-advanced-sorting) section below to see these in action.
 
@@ -290,14 +294,74 @@ numbers.sort(conditional(
 // [-2, -5, 1, 3]
 ```
 
+## 🧮 Sorting Algorithms
+
+This library provides three main sorting functions, each with different characteristics to suit various use cases:
+
+### `sort(arr, cmp?)`
+
+The recommended general-purpose sorting function that sorts arrays in-place. It intelligently selects the best available stable sorting implementation:
+
+```typescript
+import { sort } from '@moon7/sort';
+
+// Sort an array using the optimal stable sorting algorithm
+const sorted = sort([3, 1, 4, 2]);
+```
+
+- **In-place Operation**: Modifies and sorts the original array directly
+- **Algorithm Selection**: Uses the native `Array.prototype.sort()` if your JavaScript environment has a stable implementation (ES2019+), otherwise falls back to `mergeSort`
+- **Stability**: Always stable, meaning equal elements maintain their relative order
+- **Use Cases**: Best default choice when you need deterministic behavior across all environments
+
+### `mergeSort(arr, cmp?)`
+
+A stable, in-place implementation of the merge sort algorithm:
+
+```typescript
+import { mergeSort } from '@moon7/sort';
+
+// Sort directly with mergeSort
+const sorted = mergeSort([3, 1, 4, 2]);
+```
+
+- **Algorithm**: Hybrid merge sort with insertion sort for small subarrays
+- **Performance**: O(n log n) time complexity with consistent performance regardless of input distribution
+- **Stability**: Always stable (equal elements maintain their relative order)
+- **Memory Usage**: O(n) auxiliary space in the worst case
+- **Use Cases**: When stability is essential, or when sorting nearly-sorted or reversed arrays
+
+### `quickSort(arr, cmp?)`
+
+An optimized, in-place implementation of the quicksort algorithm:
+
+```typescript
+import { quickSort } from '@moon7/sort';
+
+// Sort directly with quickSort
+const sorted = quickSort([3, 1, 4, 2]);
+```
+
+- **Algorithm**: Three-way partitioning quicksort with median-of-three pivot selection and insertion sort for small subarrays
+- **Performance**: O(n log n) average time complexity, potentially O(n²) in worst case (but rare due to optimizations)
+- **Stability**: Not stable (equal elements may change their relative order)
+- **Memory Usage**: O(log n) auxiliary space for recursion in average case
+- **Best For**: Random data, arrays with duplicates, and moderately sized arrays
+- **Not Ideal For**: Fully reversed arrays or when stability is required
+
+According to benchmarks, `quickSort` outperforms the other sorting functions in most scenarios, except when dealing with fully reversed data where `mergeSort` or native sort is faster. Run `pnpm benchmarks` to see benchmarks.
+
 ## 📖 API Reference
 
 The library provides these key functions:
 
 | API                                        | Description                                                      |
 | ------------------------------------------ | ---------------------------------------------------------------- |
-| **🚀 Core**                                 |                                                                  |
-| `sort(items, cmp?)`                        | Creates a sorted copy of an iterable                             |
+| **🚀 Sorting Functions**                    |                                                                  |
+| `sort(arr, cmp?)`                          | In-place stable sort (native or mergeSort fallback)              |
+| `mergeSort(arr, cmp?)`                     | Stable in-place sort with optimization for small arrays          |
+| `quickSort(arr, cmp?)`                     | Fast in-place sort, not stable but generally more efficient      |
+| **🚀 Enums**                                |                                                                  |
 | `Direction.Ascending`                      | Enum value representing ascending sort order                     |
 | `Direction.Descending`                     | Enum value representing descending sort order                    |
 | `Sensitivity.Base`                         | Enum value for different bases unequal, cases/accents equal      |
@@ -351,3 +415,5 @@ This project is licensed under the MIT License - see the [LICENSE file](https://
 ## 🌟 Acknowledgements
 
 Created and maintained by [Munir Hussin](https://github.com/profound7).
+
+The `mergeSort` algorithm ([source code](https://github.com/moon7-io/moon7-sort/blob/main/src/sort.ts)) is ported from [Haxe](https://github.com/HaxeFoundation/haxe/blob/development/std/haxe/ds/ArraySort.hx)

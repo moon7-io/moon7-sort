@@ -134,9 +134,11 @@ numbers.sort(reverse);
 > ⚠️ **Note**: The `random()` and `randomly` functions produce biased results and are not suitable for
 > statistical or cryptographic applications. For proper random shuffling, use the Fisher-Yates algorithm instead.
 
-The `preserve` comparator always returns 1, which maintains the original order when used with JavaScript's Array.sort(). It serves as an "identity function" for comparators - useful when working with higher-order functions that require a comparator parameter, but you want to maintain the original order.
+The `preserve` comparator always returns 1, which maintains the original order when used with JavaScript's Array.sort(). It serves as an *identity function* for comparators - useful when working with higher-order functions that require a comparator parameter, but you want to maintain the original order.
 
 The `reverse` comparator always returns -1, which reverses the original order when used with Array.sort(). This provides a simple way to reverse an array without changing its relative ordering logic otherwise.
+
+> ⚠️ **Note**: The behavior of `preserve` and `reverse` depends on sort stability. Prior to ES2019, JavaScript's `Array.prototype.sort()` was not required to be stable, and implementations varied across browsers and engines. For reliable results with these comparators, ensure you're using an ES2019+ environment or a JavaScript engine with stable sort implementation.
 
 Check out the practical examples in the [Advanced Sorting](#%EF%B8%8F-advanced-sorting) section below to see these in action.
 

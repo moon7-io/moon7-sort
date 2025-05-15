@@ -95,7 +95,7 @@ Traditional imperative approach would require nested if statements or complex lo
 
 ## 🚀 Usage
 
-### 🔄 Basic Sorting
+### 🧱 Basic Sorting
 
 ```typescript
 import { ascending, descending, preserve, dir, Direction, random, randomly } from '@moon7/sort';
@@ -351,17 +351,17 @@ const sorted = quickSort([3, 1, 4, 2]);
 
 According to benchmarks, `quickSort` outperforms the other sorting functions in most scenarios, except when dealing with fully reversed data where `mergeSort` or native sort is faster. Run `pnpm benchmarks` to see benchmarks.
 
-## 📖 API Reference
+## 📚 API Reference
 
 The library provides these key functions:
 
 | API                                        | Description                                                      |
 | ------------------------------------------ | ---------------------------------------------------------------- |
-| **🚀 Sorting Functions**                    |                                                                  |
+| **🧮 Sorting Functions**                    |                                                                  |
 | `sort(arr, cmp?)`                          | In-place stable sort (native or mergeSort fallback)              |
 | `mergeSort(arr, cmp?)`                     | Stable in-place sort with optimization for small arrays          |
 | `quickSort(arr, cmp?)`                     | Fast in-place sort, not stable but generally more efficient      |
-| **🚀 Enums**                                |                                                                  |
+| **🏷️ Enums**                                |                                                                  |
 | `Direction.Ascending`                      | Enum value representing ascending sort order                     |
 | `Direction.Descending`                     | Enum value representing descending sort order                    |
 | `Sensitivity.Base`                         | Enum value for different bases unequal, cases/accents equal      |

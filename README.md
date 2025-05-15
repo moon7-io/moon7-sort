@@ -41,13 +41,19 @@ list.sort(ascending);
 Most functions in this library are higher-order functions - they accept other functions as arguments and return new functions, enabling powerful composition patterns.
 
 ```typescript
-import { by, descending } from "@moon7/sort";
+import { by, descending, naturally, reverse } from "@moon7/sort";
 
-// Sort by name, ascending
+// Sort by name, ascending (ascending is default)
 list.sort(by(x => x.name));
 
 // Sort by name, descending
 list.sort(by(x => x.name, descending));
+
+// Sort by name, using natural string sorting
+list.sort(by(x => x.name, naturally));
+
+// Sort by name, using natural string sorting, descending
+list.sort(by(x => x.name, reverse(naturally)));
 
 // How it works:
 // `by` takes a mapping function and an optional comparator, returning a new comparator

@@ -124,7 +124,7 @@ numbers.sort(random(0.5));
 // Same as above, with default probability threshold
 numbers.sort(randomly);
 
-// Sort using the identity function, which does nothing
+// Sort using the identity function, which retains existing order
 numbers.sort(preserve);
 
 // Sort using the inverse identity function, which reverses the array

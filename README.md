@@ -13,6 +13,19 @@ A lightweight, functional utility library providing composable sorting functions
 - 🧶 **Natural Sorting** - Intelligent string sorting with proper handling of numbers
 - ⛓️ **Chaining** - Order, group, and prioritize items with composable functions
 
+## 📦 Installation
+
+```bash
+# Using npm
+npm install @moon7/sort
+
+# Using yarn
+yarn add @moon7/sort
+
+# Using pnpm
+pnpm add @moon7/sort
+```
+
 ## 🧠 Motivation
 
 Sorting functions in JavaScript compare two values and return a numeric result: negative (-1) when the first value is less than the second, positive (1) when greater, and zero (0) when they're equal.
@@ -79,19 +92,6 @@ list.sort(
 ```
 
 Traditional imperative approach would require nested if statements or complex logic. With functional composition, we can express the sorting intent declaratively.
-
-## 📦 Installation
-
-```bash
-# Using npm
-npm install @moon7/sort
-
-# Using yarn
-yarn add @moon7/sort
-
-# Using pnpm
-pnpm add @moon7/sort
-```
 
 ## 🚀 Usage
 

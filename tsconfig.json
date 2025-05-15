@@ -3,7 +3,7 @@
     "display": "Default",
     "compilerOptions": {
         "target": "ES2022",
-        "module": "ES2020",
+        "module": "ES2022",
         "moduleResolution": "Bundler",
         "sourceMap": true,
         "resolveJsonModule": true,
@@ -23,9 +23,9 @@
     },
     "include": [
         "types/**/*",
-        "test/**/*",
         "src/**/*",
-        "test/**/*"
+        "test/**/*",
+        "benchmarks/**/*",
     ],
     "exclude": [
         "node_modules",

@@ -126,12 +126,19 @@ numbers.sort(randomly);
 
 // Sort using the identity function, which does nothing
 numbers.sort(preserve);
+
+// Sort using the inverse identity function, which reverses the array
+numbers.sort(reverse);
 ```
 
 > ⚠️ **Note**: The `random()` and `randomly` functions produce biased results and are not suitable for
 > statistical or cryptographic applications. For proper random shuffling, use the Fisher-Yates algorithm instead.
 
-The `preserve` comparator treats everything as equal. Why include a `preserve` comparator that seemingly does nothing? Because it serves as an "identity function" for comparators - useful when working with higher-order functions that require a comparator parameter, but you want to maintain the original order. Check out the practical examples in the [Advanced Sorting](#%EF%B8%8F-advanced-sorting) section below to see this in action.
+The `preserve` comparator always returns 1, which maintains the original order when used with JavaScript's Array.sort(). It serves as an "identity function" for comparators - useful when working with higher-order functions that require a comparator parameter, but you want to maintain the original order.
+
+The `reverse` comparator always returns -1, which reverses the original order when used with Array.sort(). This provides a simple way to reverse an array without changing its relative ordering logic otherwise.
+
+Check out the practical examples in the [Advanced Sorting](#%EF%B8%8F-advanced-sorting) section below to see these in action.
 
 ### 🔍 Sorting Objects by Properties
 
@@ -224,6 +231,10 @@ const nums = [3, 1, 4, 2];
 nums.sort(preserve);
 // [3, 1, 4, 2] (unchanged)
 
+// Reverse original order when sorting
+nums.sort(reverse);
+// [2, 4, 1, 3] (reversed)
+
 // Group by category, but preserve original order within each group
 const categoryItems = [
     { id: 1, category: 'A' },
@@ -295,6 +306,7 @@ The library provides these key functions:
 | `ascending`                                | Compares values in ascending order                               |
 | `descending`                               | Compares values in descending order                              |
 | `preserve`                                 | Identity comparator that preserves original order                |
+| `reverse`                                  | Comparator that reverses the original order                      |
 | `dir(isAscending)`                         | Creates a comparator for a specific direction                    |
 | **🎲 Shuffle Comparators**                  |                                                                  |
 | `random(p)`                                | Creates a comparator that sorts randomly with given probability  |
@@ -310,6 +322,7 @@ The library provides these key functions:
 | `group(selector, groupOrder?, itemOrder?)` | Groups items and orders both groups and items within groups      |
 | `conditional(condition, ifTrue, ifFalse)`  | Selects between comparators based on a condition                 |
 | `flip(fn, ignore?)`                        | Flips the result of another comparator                           |
+
 
 Note that all **comparators** are functions in the form of `(a, b) => number`, which is omitted in the table above for brevity. For example, `ascending` is actually a function `ascending(a, b)`.
 

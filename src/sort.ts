@@ -149,7 +149,7 @@ export function descending<T>(a: T, b: T): number {
 }
 
 /**
- * A comparator that always returns 0, preserving the original order of elements
+ * A comparator that always returns 1, preserving the original order of elements
  *
  * This comparator can be used when you want to maintain the original order of elements
  * in scenarios like group sorting, where you want to group items but not change their
@@ -166,6 +166,25 @@ export function descending<T>(a: T, b: T): number {
  * items.sort(group(item => item.category, ascending, preserve));
  */
 export const preserve: Comparator<any> = () => 1;
+
+/**
+ * A comparator that always returns -1, reverses the original order of elements
+ *
+ * This comparator can be used when you want to reverse the original order of elements
+ * in scenarios like group sorting, where you want to group items but not change their
+ * relative positions within groups.
+ *
+ * @example
+ * // Preserve original order when sorting
+ * const array = [3, 1, 4, 2];
+ * array.sort(reverse);
+ * // Result: [2, 4, 1, 3]
+ *
+ * @example
+ * // Group by category, but reverses the original order within each group
+ * items.sort(group(item => item.category, ascending, reverses));
+ */
+export const reverse: Comparator<any> = () => -1;
 
 /**
  * Enumeration representing sorting directions

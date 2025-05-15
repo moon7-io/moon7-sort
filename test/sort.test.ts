@@ -18,6 +18,7 @@ import {
     conditional,
     sort,
     preserve,
+    reverse,
 } from "~/index";
 
 describe("ascending", () => {
@@ -969,12 +970,12 @@ describe("sort", () => {
 });
 
 describe("preserve", () => {
-    test("basic comparison always returns 0", () => {
-        expect(preserve(1, 2)).toBe(0);
-        expect(preserve(2, 1)).toBe(0);
-        expect(preserve("a", "b")).toBe(0);
-        expect(preserve(true, false)).toBe(0);
-        expect(preserve({}, {})).toBe(0);
+    test("basic comparison always returns 1", () => {
+        expect(preserve(1, 2)).toBe(1);
+        expect(preserve(2, 1)).toBe(1);
+        expect(preserve("a", "b")).toBe(1);
+        expect(preserve(true, false)).toBe(1);
+        expect(preserve({}, {})).toBe(1);
     });
 
     test("sorting with preserve maintains original order", () => {
@@ -1003,14 +1004,59 @@ describe("preserve", () => {
         expect(result.map(item => item.id)).toEqual([1, 3, 2]);
     });
 
-    test("flip(preserve) still maintains original order", () => {
+    test("flip(preserve) reverses original order", () => {
         const nums = [3, 1, 4, 2];
-        const originalOrder = [...nums];
 
         // Sort using flip(preserve) comparator
         const result = [...nums].sort(flip(preserve));
 
-        // Should still maintain original order since preserve always returns 0
+        // Should reverse the original order
+        expect(result).toEqual([2, 4, 1, 3]);
+    });
+});
+
+describe("reverse", () => {
+    test("basic comparison always returns -1", () => {
+        expect(reverse(1, 2)).toBe(-1);
+        expect(reverse(2, 1)).toBe(-1);
+        expect(reverse("a", "b")).toBe(-1);
+        expect(reverse(true, false)).toBe(-1);
+        expect(reverse({}, {})).toBe(-1);
+    });
+
+    test("sorting with reverse reverses original order", () => {
+        const nums = [3, 1, 4, 2];
+
+        // Sort using reverse comparator
+        const result = [...nums].sort(reverse);
+
+        // Should reverse the original order
+        expect(result).toEqual([2, 4, 1, 3]);
+    });
+
+    test("can be used in composition with other comparators", () => {
+        const items = [
+            { id: 1, category: "A" },
+            { id: 2, category: "B" },
+            { id: 3, category: "A" },
+        ];
+
+        // Group by category, but reverse the order within groups
+        const result = [...items].sort(group(item => item.category, ascending, reverse));
+
+        // Items should be grouped by category but reverse order within groups
+        // IDs 1 and 3 are in category A, ID 2 is in category B
+        expect(result.map(item => item.id)).toEqual([3, 1, 2]);
+    });
+
+    test("flip(reverse) maintains original order", () => {
+        const nums = [3, 1, 4, 2];
+        const originalOrder = [...nums];
+
+        // Sort using flip(reverse) comparator
+        const result = [...nums].sort(flip(reverse));
+
+        // Should maintain the original order since flip negates -1 to 1
         expect(result).toEqual(originalOrder);
     });
 });

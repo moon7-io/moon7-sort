@@ -4,7 +4,7 @@
  * and quickSort implementations under various conditions.
  */
 import { bench, run, barplot, summary } from "mitata";
-import { mergeSort, quickSort } from "~/index";
+import { nativeSort, mergeSort, quickSort, timSort } from "~/index";
 
 const benchmark = (fn: () => void) => barplot(() => summary(() => fn()));
 
@@ -43,36 +43,49 @@ function createEqualArray(size: number): number[] {
     return Array.from({ length: size }, () => 42); // All elements are equal
 }
 
-const createMode = [
-    { fn: createRandomArray, label: "Random" },
-    { fn: createNearlySortedArray, label: "Nearly Sorted" },
-    { fn: createReversedArray, label: "Reversed" },
-    { fn: createDuplicatesArray, label: "Duplicates" },
-    { fn: createEqualArray, label: "Equal" },
+const modes = [
+    { create: createRandomArray, label: "Random" },
+    { create: createNearlySortedArray, label: "Nearly Sorted" },
+    { create: createReversedArray, label: "Reversed" },
+    { create: createDuplicatesArray, label: "Duplicates" },
+    { create: createEqualArray, label: "Equal" },
 ];
 
 // const sizes = [10, 100, 1000];
-const sizes = [10_000, 100_000];
+const sizes = [10, 100, 1000, 10_000, 100_000];
+
+const sorters = [
+    { sort: nativeSort, label: "Native Sort" },
+    { sort: mergeSort, label: "Merge Sort" },
+    { sort: quickSort, label: "Quick Sort" },
+    { sort: timSort, label: "Tim Sort" },
+];
+
+function verify(expected: number[], actual: number[]) {
+    if (expected.length !== actual.length) {
+        throw new Error("Array lengths do not match");
+    }
+    for (let i = 0; i < expected.length; i++) {
+        if (expected[i] !== actual[i]) {
+            throw new Error(`Arrays differ at index ${i}: ${expected[i]} !== ${actual[i]}`);
+        }
+    }
+}
 
 for (const size of sizes) {
-    for (const { fn: create, label } of createMode) {
+    for (const { create, label } of modes) {
         benchmark(() => {
             const values = create(size);
+            const expected = [...values].sort((a, b) => a - b);
+            const actuals: (null | number[])[] = [null, null, null, null];
 
-            bench(`Native sort (${label}, ${size})`, () => {
-                const arr = [...values];
-                arr.sort((a, b) => a - b);
-            });
-
-            bench(`MergeSort (${label}, ${size})`, () => {
-                const arr = [...values];
-                mergeSort(arr);
-            });
-
-            bench(`QuickSort (${label}, ${size})`, () => {
-                const arr = [...values];
-                quickSort(arr);
-            });
+            for (const { sort, label: sorterLabel } of sorters) {
+                bench(`${sorterLabel} (${label}, ${size})`, () => {
+                    const arr = [...values];
+                    sort(arr);
+                    verify(expected, arr);
+                });
+            }
         });
     }
 }

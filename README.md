@@ -416,4 +416,4 @@ This project is licensed under the MIT License - see the [LICENSE file](https://
 
 Created and maintained by [Munir Hussin](https://github.com/profound7).
 
-The `mergeSort` algorithm ([source code](https://github.com/moon7-io/moon7-sort/blob/main/src/sort.ts)) is ported from [Haxe](https://github.com/HaxeFoundation/haxe/blob/development/std/haxe/ds/ArraySort.hx)
+The `mergeSort` algorithm ([source code](https://github.com/moon7-io/moon7-sort/blob/main/src/sorters/mergesort.ts)) is ported from [Haxe](https://github.com/HaxeFoundation/haxe/blob/development/std/haxe/ds/ArraySort.hx)

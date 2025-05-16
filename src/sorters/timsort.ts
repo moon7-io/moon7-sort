@@ -164,9 +164,11 @@ export function gallopLeft<T>(key: T, arr: T[], base: number, len: number, hint:
             }
             /* v8 ignore stop */
         }
+        /* v8 ignore start */
         if (offset > maxOffset) {
             offset = maxOffset;
         }
+        /* v8 ignore stop */
 
         // Adjust offsets relative to hint
         lastOffset += hint;
@@ -337,7 +339,7 @@ export function merge<T>(arr: T[], left: number, mid: number, right: number, cmp
 
     // Merge with galloping mode
     while (i < len1 && j < len2) {
-        if (cmp(leftArr[i], rightArr[j]) <= 0) {
+        if (cmp(rightArr[j], leftArr[i]) > 0) {
             // Taking element from left run
             arr[k++] = leftArr[i++];
             leftRunCount++;

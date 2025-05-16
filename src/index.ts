@@ -59,6 +59,3 @@ export * from "./complex";
 export * from "./random";
 export * from "./strings";
 export * from "./sort";
-
-export * from "./sorters/mergesort";
-export * from "./sorters/quicksort";

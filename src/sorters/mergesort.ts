@@ -23,12 +23,13 @@ import { Comparator } from "~/types";
  * Performs an in-place stable sort on an array using the merge sort algorithm.
  *
  * This implementation uses a hybrid approach that falls back to insertion sort
- * for small arrays (less than 12 elements) for better performance. The algorithm
- * guarantees stability, meaning that equal elements maintain their relative order.
+ * for small arrays for better performance. The algorithm guarantees stability,
+ * meaning that equal elements maintain their relative order.
  *
  * @typeParam T - The type of elements to sort
- * @param arr - The array to sort (will be modified in-place)
- * @param cmp - The comparator function to determine order (defaults to ascending)
+ * @param arr - The array to sort
+ * @param cmp - The comparator function to determine order
+ *  * @param small - Size threshold below which insertion sort is used
  * @returns The sorted array (same reference as input)
  *
  * @example
@@ -44,14 +45,14 @@ import { Comparator } from "~/types";
  * console.log(data); // [4, 3, 2, 1]
  * ```
  */
-export function mergeSort<T>(arr: T[], cmp: Comparator<T> = ascending): T[] {
-    rec(arr, cmp, 0, arr.length);
+export function mergeSort<T>(arr: T[], cmp: Comparator<T> = ascending, small = 32): T[] {
+    rec(arr, cmp, 0, arr.length, small);
     return arr;
 }
 
-function rec<T>(a: T[], cmp: Comparator<T>, lo: number, hi: number) {
+function rec<T>(a: T[], cmp: Comparator<T>, lo: number, hi: number, small: number) {
     const middle = (lo + hi) >> 1;
-    if (hi - lo < 12) {
+    if (hi - lo < small) {
         if (hi <= lo) return;
         for (let i = lo + 1; i < hi; i++) {
             let j = i;
@@ -66,8 +67,8 @@ function rec<T>(a: T[], cmp: Comparator<T>, lo: number, hi: number) {
         }
         return;
     }
-    rec(a, cmp, lo, middle);
-    rec(a, cmp, middle, hi);
+    rec(a, cmp, lo, middle, small);
+    rec(a, cmp, middle, hi, small);
     doMerge(a, cmp, lo, middle, hi, middle - lo, hi - middle);
 }
 

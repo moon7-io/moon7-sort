@@ -13,9 +13,9 @@ import { Comparator } from "~/types";
  * it does not guarantee stability (equal elements may not maintain their original order).
  *
  * @typeParam T - The type of elements to sort
- * @param arr - The array to sort (will be modified in-place)
- * @param cmp - The comparator function to determine order (defaults to ascending)
- * @param insertionThreshold - Size threshold below which insertion sort is used (defaults to 12)
+ * @param arr - The array to sort
+ * @param cmp - The comparator function to determine order
+ * @param small - Size threshold below which insertion sort is used
  * @returns The sorted array (same reference as input)
  *
  * @example
@@ -41,19 +41,19 @@ import { Comparator } from "~/types";
  * sort and mergeSort tend to perform better. Consider using those alternatives
  * if you're primarily sorting reversed data.
  */
-export function quickSort<T>(arr: T[], cmp: Comparator<T> = ascending, insertionThreshold = 12): T[] {
+export function quickSort<T>(arr: T[], cmp: Comparator<T> = ascending, small = 16): T[] {
     if (arr.length <= 1) {
         return arr;
     }
-    quickSortHelper(arr, 0, arr.length - 1, cmp, insertionThreshold);
+    quickSortHelper(arr, 0, arr.length - 1, cmp, small);
     return arr;
 }
 
-function quickSortHelper<T>(a: T[], lo: number, hi: number, cmp: Comparator<T>, threshold: number): void {
+function quickSortHelper<T>(a: T[], lo: number, hi: number, cmp: Comparator<T>, small: number): void {
     if (lo < hi) {
         // If the array is small, use insertion sort
         // This is a common optimization for quicksort to improve performance on small arrays
-        if (hi - lo < threshold) {
+        if (hi - lo < small) {
             for (let i = lo + 1; i <= hi; i++) {
                 let j = i;
                 while (j > lo) {
@@ -111,8 +111,8 @@ function quickSortHelper<T>(a: T[], lo: number, hi: number, cmp: Comparator<T>, 
         }
 
         // Recursively sort the left and right sections
-        quickSortHelper(a, lo, lt - 1, cmp, threshold);
-        quickSortHelper(a, gt + 1, hi, cmp, threshold);
+        quickSortHelper(a, lo, lt - 1, cmp, small);
+        quickSortHelper(a, gt + 1, hi, cmp, small);
     }
 }
 

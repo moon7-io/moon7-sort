@@ -141,8 +141,8 @@ The `reverse` comparator always returns -1, which reverses the original order wh
 > ⚠️ **Note on Stability**: The `preserve` and `reverse` comparators require a stable sorting algorithm to work correctly. Before ES2019, JavaScript's native `Array.prototype.sort()` wasn't guaranteed to be stable, with behavior varying across engines. For consistent results:
 > 
 > - Use an ES2019+ environment where stable sorting is guaranteed
-> - Or use this library's `sort()` function, which automatically detects and uses your engine's stable sort implementation or falls back to our stable `mergeSort()` implementation
-> - Or directly use `mergeSort()`, which is always stable regardless of environment
+> - Or use this library's `sort()` function, which automatically detects and uses your engine's stable sort implementation or falls back to our stable `timSort()` implementation
+> - Or directly use `timSort()` or `mergeSort()`, which is always stable regardless of environment
 
 Check out the practical examples in the [Advanced Sorting](#%EF%B8%8F-advanced-sorting) section below to see these in action.
 
@@ -351,6 +351,26 @@ const sorted = quickSort([3, 1, 4, 2]);
 
 According to benchmarks, `quickSort` outperforms the other sorting functions in most scenarios, except when dealing with fully reversed data where `mergeSort` or native sort is faster. Run `pnpm benchmarks` to see benchmarks.
 
+### `timSort(arr, cmp?)`
+
+A hybrid sorting algorithm based on the implementation used in Python, Java, and other programming languages:
+
+```typescript
+import { timSort } from '@moon7/sort';
+
+// Sort directly with timSort
+const sorted = timSort([3, 1, 4, 2]);
+```
+
+- **Algorithm**: Hybrid algorithm combining merge sort and insertion sort, optimized for real-world data
+- **Performance**: O(n log n) time complexity with adaptive optimizations for partially sorted data
+- **Stability**: Always stable (equal elements maintain their relative order)
+- **Memory Usage**: O(n) auxiliary space
+- **Best For**: Real-world data with partially sorted subarrays or "runs"
+- **Key Features**: Natural run detection, galloping mode for efficiently merging runs with large differences, and small array optimization
+
+TimSort excels at handling real-world data that often contains partially-ordered sections. It's particularly efficient for sorting large datasets with pre-existing order patterns.
+
 ## 📚 API Reference
 
 The library provides these key functions:
@@ -359,8 +379,9 @@ The library provides these key functions:
 | ------------------------------------------ | ---------------------------------------------------------------- |
 | **🧮 Sorting Functions**                    |                                                                  |
 | `sort(arr, cmp?)`                          | In-place stable sort (native or mergeSort fallback)              |
-| `mergeSort(arr, cmp?)`                     | Stable in-place sort with optimization for small arrays          |
-| `quickSort(arr, cmp?)`                     | Fast in-place sort, not stable but generally more efficient      |
+| `mergeSort(arr, cmp?, small=32)`           | Stable in-place sort with optimization for small arrays          |
+| `quickSort(arr, cmp?, small=16)`           | Fast in-place sort, not stable but generally more efficient      |
+| `timSort(arr, cmp?)`                       | Hybrid stable sort with optimal performance for real-world data  |
 | **🏷️ Enums**                                |                                                                  |
 | `Direction.Ascending`                      | Enum value representing ascending sort order                     |
 | `Direction.Descending`                     | Enum value representing descending sort order                    |

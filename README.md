@@ -314,7 +314,7 @@ const sorted = sort([3, 1, 4, 2]);
 - **Stability**: Always stable, meaning equal elements maintain their relative order
 - **Use Cases**: Best default choice when you need deterministic behavior across all environments
 
-### `mergeSort(arr, cmp?)`
+### `mergeSort(arr, cmp?, small?)`
 
 A stable, in-place implementation of the merge sort algorithm:
 
@@ -328,10 +328,11 @@ const sorted = mergeSort([3, 1, 4, 2]);
 - **Algorithm**: Hybrid merge sort with insertion sort for small subarrays
 - **Performance**: O(n log n) time complexity with consistent performance regardless of input distribution
 - **Stability**: Always stable (equal elements maintain their relative order)
+- **Small Array Optimization**: The `small` parameter defines the subarray size threshold below which the algorithm switches to insertion sort for better performance
 - **Memory Usage**: O(n) auxiliary space in the worst case
 - **Use Cases**: When stability is essential, or when sorting nearly-sorted or reversed arrays
 
-### `quickSort(arr, cmp?)`
+### `quickSort(arr, cmp?, small?)`
 
 An optimized, in-place implementation of the quicksort algorithm:
 
@@ -346,6 +347,7 @@ const sorted = quickSort([3, 1, 4, 2]);
 - **Performance**: O(n log n) average time complexity, potentially O(n²) in worst case (but rare due to optimizations)
 - **Stability**: Not stable (equal elements may change their relative order)
 - **Memory Usage**: O(log n) auxiliary space for recursion in average case
+- **Small Array Optimization**: The `small` parameter defines the subarray size threshold below which the algorithm switches to insertion sort for better performance
 - **Best For**: Random data, arrays with duplicates, and moderately sized arrays
 - **Not Ideal For**: Fully reversed arrays or when stability is required
 
@@ -379,8 +381,8 @@ The library provides these key functions:
 | ------------------------------------------ | ---------------------------------------------------------------- |
 | **🧮 Sorting Functions**                    |                                                                  |
 | `sort(arr, cmp?)`                          | In-place stable sort (native or mergeSort fallback)              |
-| `mergeSort(arr, cmp?, small=32)`           | Stable in-place sort with optimization for small arrays          |
-| `quickSort(arr, cmp?, small=16)`           | Fast in-place sort, not stable but generally more efficient      |
+| `mergeSort(arr, cmp?, small?)`             | Stable in-place sort with optimization for small arrays          |
+| `quickSort(arr, cmp?, small?)`             | Fast in-place sort, not stable but generally more efficient      |
 | `timSort(arr, cmp?)`                       | Hybrid stable sort with optimal performance for real-world data  |
 | **🏷️ Enums**                                |                                                                  |
 | `Direction.Ascending`                      | Enum value representing ascending sort order                     |

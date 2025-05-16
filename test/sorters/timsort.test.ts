@@ -1,12 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { timSort, descending, preserve, reverse } from "~/index";
-import {
-    getMinimumRunLength,
-    insertionSort,
-    gallopLeft,
-    gallopRight,
-    merge
-} from "~/sorters/timsort";
+import { getMinimumRunLength, insertionSort, gallopLeft, gallopRight, merge } from "~/sorters/timsort";
 
 describe("timSort", () => {
     test("empty array remains empty", () => {
@@ -193,7 +187,7 @@ describe("insertionSort", () => {
 describe("gallopLeft", () => {
     test("finds insertion point in uniform array", () => {
         const arr = [10, 10, 10, 10, 20, 20, 20, 20];
-        
+
         // Find where 15 would be inserted (after all 10s, before any 20s)
         const pos = gallopLeft(15, arr, 0, arr.length, 0, (a, b) => a - b);
         expect(pos).toBe(4); // After the four 10s
@@ -233,14 +227,14 @@ describe("gallopLeft", () => {
         const pos = gallopLeft(30, arr, 0, arr.length, 0, (a, b) => a - b);
         expect(pos).toBe(2); // Position of 30 itself (index 2)
     });
-    
+
     test("handles large jumps that might cause overflow", () => {
         // Create a large array with a wide gap to force large offset calculations
         const arr = [];
         for (let i = 0; i < 1000; i++) {
             arr.push(i < 100 ? 10 : 1000); // First 100 elements are 10, rest are 1000
         }
-        
+
         const pos = gallopLeft(500, arr, 0, arr.length, 0, (a, b) => a - b);
         expect(pos).toBe(100); // After all the 10s, before any 1000s
     });
@@ -249,7 +243,7 @@ describe("gallopLeft", () => {
 describe("gallopRight", () => {
     test("finds rightmost position in uniform array", () => {
         const arr = [10, 10, 10, 10, 20, 20, 20, 20];
-        
+
         // Find where 10 would be inserted from right
         const pos = gallopRight(10, arr, 0, arr.length, 0, (a, b) => a - b);
         expect(pos).toBe(4); // After all 10s
@@ -289,14 +283,14 @@ describe("gallopRight", () => {
         const pos = gallopRight(30, arr, 0, arr.length, 0, (a, b) => a - b);
         expect(pos).toBe(4); // After all 10s, 20s, and 30s (index 4)
     });
-    
+
     test("handles large jumps that might cause overflow", () => {
         // Create a large array with a wide gap to force large offset calculations
         const arr = [];
         for (let i = 0; i < 1000; i++) {
             arr.push(i < 100 ? 10 : 1000); // First 100 elements are 10, rest are 1000
         }
-        
+
         const pos = gallopRight(500, arr, 0, arr.length, 0, (a, b) => a - b);
         expect(pos).toBe(100); // After all the 10s, before any 1000s
     });
@@ -334,7 +328,7 @@ describe("merge", () => {
         merge(arr, 0, 2, 5, (a, b) => a - b);
         expect(arr).toEqual([1, 2, 2, 3, 3, 4]);
     });
-    
+
     test("merges large runs efficiently", () => {
         // Create two large sorted runs to merge
         const arr = [];
@@ -346,10 +340,10 @@ describe("merge", () => {
         for (let i = 0; i < 100; i++) {
             arr.push(i * 2 + 1);
         }
-        
+
         // Expected result after merge is [0, 1, 2, ..., 199]
         const expected = Array.from({ length: 200 }, (_, i) => i);
-        
+
         merge(arr, 0, 99, 199, (a, b) => a - b);
         expect(arr).toEqual(expected);
     });

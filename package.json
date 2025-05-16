@@ -57,7 +57,7 @@
         "test": "vitest run",
         "test:watch": "vitest watch",
         "test:coverage": "vitest run --coverage",
-        "benchmark": "pnpm benchmark",
+        "benchmark": "pnpm benchmark:sorter",
         "benchmark:sorter": "vite-node benchmarks/sorting.bench.ts"
     },
     "devDependencies": {

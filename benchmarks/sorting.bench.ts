@@ -4,7 +4,7 @@
  * and quickSort implementations under various conditions.
  */
 import { bench, run, barplot, summary } from "mitata";
-import { nativeSort, mergeSort, quickSort, timSort } from "~/index";
+import { nativeSort, mergeSort, quickSort, timSort, insertionSort } from "~/index";
 
 const benchmark = (fn: () => void) => barplot(() => summary(() => fn()));
 
@@ -51,17 +51,19 @@ const modes = [
     { create: createEqualArray, label: "Equal" },
 ];
 
-// const sizes = [10, 100, 1000];
+// const sizes = [100, 1000, 10_000];
+// const sizes = [10_000, 100_000];
 const sizes = [10, 100, 1000, 10_000, 100_000];
 
 const sorters = [
     { sort: nativeSort, label: "Native Sort" },
+    // { sort: insertionSort, label: "Insertion Sort" },
     { sort: mergeSort, label: "Merge Sort" },
     { sort: quickSort, label: "Quick Sort" },
     { sort: timSort, label: "Tim Sort" },
 ];
 
-function verify(expected: number[], actual: number[]) {
+function verify(expected: number[], actual: number[]): void {
     if (expected.length !== actual.length) {
         throw new Error("Array lengths do not match");
     }
@@ -77,13 +79,19 @@ for (const size of sizes) {
         benchmark(() => {
             const values = create(size);
             const expected = [...values].sort((a, b) => a - b);
-            const actuals: (null | number[])[] = [null, null, null, null];
+            const actuals: number[][] = [];
 
-            for (const { sort, label: sorterLabel } of sorters) {
+            for (let i = 0; i < sorters.length; i++) {
+                const { sort, label: sorterLabel } = sorters[i];
                 bench(`${sorterLabel} (${label}, ${size})`, () => {
                     const arr = [...values];
                     sort(arr);
-                    verify(expected, arr);
+
+                    // only verify the first time
+                    if (actuals[i] == null) {
+                        verify(expected, arr);
+                        actuals[i] = arr;
+                    }
                 });
             }
         });

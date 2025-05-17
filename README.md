@@ -296,11 +296,11 @@ numbers.sort(conditional(
 
 ## 🧮 Sorting Algorithms
 
-This library provides three main sorting functions, each with different characteristics to suit various use cases:
+This library provides a few sorting functions, each with different characteristics to suit various use cases:
 
 ### `sort(arr, cmp?)`
 
-The recommended general-purpose sorting function that sorts arrays in-place. It intelligently selects the best available stable sorting implementation:
+The recommended general-purpose sorting function that sorts arrays in-place. It uses native sort if it is stable, and otherwise falls back to `timSort`:
 
 ```typescript
 import { sort } from '@moon7/sort';
@@ -310,9 +310,45 @@ const sorted = sort([3, 1, 4, 2]);
 ```
 
 - **In-place Operation**: Modifies and sorts the original array directly
-- **Algorithm Selection**: Uses the native `Array.prototype.sort()` if your JavaScript environment has a stable implementation (ES2019+), otherwise falls back to `mergeSort`
+- **Algorithm Selection**: Uses the native `Array.prototype.sort()` if your JavaScript environment has a stable implementation (ES2019+), otherwise falls back to `timSort`
 - **Stability**: Always stable, meaning equal elements maintain their relative order
 - **Use Cases**: Best default choice when you need deterministic behavior across all environments
+
+### `nativeSort(arr, cmp?)`
+
+A direct wrapper around JavaScript's built-in Array.prototype.sort():
+
+```typescript
+import { nativeSort } from '@moon7/sort';
+
+// Sort using the JavaScript engine's native implementation
+const sorted = nativeSort([3, 1, 4, 2]);
+```
+
+- **In-place Operation**: Modifies and sorts the original array directly
+- **Performance**: Typically highly optimized by JavaScript engines
+- **Stability**: Stable in modern JavaScript engines (ES2019+), but may not be stable in older environments
+- **Algorithm**: Implementation varies by JavaScript engine (typically TimSort or MergeSort)
+- **Use Cases**: When you want the most performant sort available in the user's JavaScript engine
+
+### `insertionSort(arr, cmp?)`
+
+A simple but efficient sorting algorithm, particularly for small or nearly-sorted arrays:
+
+```typescript
+import { insertionSort } from '@moon7/sort';
+
+// Sort array using insertion sort
+const sorted = insertionSort([3, 1, 4, 2]);
+```
+
+- **In-place Operation**: Modifies and sorts the original array directly
+- **Algorithm**: Builds the sorted array one item at a time by shifting elements as needed
+- **Performance**: O(n²) time complexity in worst case, but can approach O(n) for nearly sorted arrays
+- **Stability**: Always stable (equal elements maintain their relative order)
+- **Memory Usage**: O(1) auxiliary space (sorts in-place)
+- **Best For**: Small arrays (typically less than 20 elements) or nearly sorted arrays
+- **Use Cases**: Used internally by other sorting algorithms for small subarrays
 
 ### `mergeSort(arr, cmp?, small?)`
 
@@ -351,7 +387,7 @@ const sorted = quickSort([3, 1, 4, 2]);
 - **Best For**: Random data, arrays with duplicates, and moderately sized arrays
 - **Not Ideal For**: Fully reversed arrays or when stability is required
 
-According to benchmarks, `quickSort` outperforms the other sorting functions in most scenarios, except when dealing with fully reversed data where `mergeSort` or native sort is faster. Run `pnpm benchmarks` to see benchmarks.
+According to benchmarks, `quickSort` outperforms the other sorting functions in most scenarios, except when dealing with fully reversed data where `timSort`, `mergeSort` and native sort are faster. Run `pnpm benchmarks` to see benchmarks.
 
 ### `timSort(arr, cmp?)`
 

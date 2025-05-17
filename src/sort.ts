@@ -1,6 +1,7 @@
 import { ascending } from "./basic";
 import { isNativeSortStable } from "./internal";
 import { Comparator } from "./types";
+import { insertionRangeSort, insertionSort } from "~/sorters/insertionsort";
 import { mergeSort } from "~/sorters/mergesort";
 import { nativeSort } from "~/sorters/nativesort";
 import { quickSort } from "~/sorters/quicksort";
@@ -34,4 +35,4 @@ export function sort<T>(arr: T[], cmp: Comparator<T> = ascending): T[] {
     return timSort(arr, cmp);
 }
 
-export { nativeSort, mergeSort, quickSort, timSort };
+export { nativeSort, mergeSort, quickSort, timSort, insertionSort, insertionRangeSort, isNativeSortStable };

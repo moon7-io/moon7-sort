@@ -3,11 +3,11 @@
  * Do not use these functions directly in application code.
  */
 
-import { descending } from "~/basic";
-import { mergeSort } from "~/sort";
+import { ascending, descending, preserve, reverse } from "~/basic";
+import { mergeSort, nativeSort } from "~/sort";
 import { Comparator } from "~/types";
 
-type Sorter<T> = (items: T[], cmp?: Comparator<T>) => T[];
+export type Sorter<T> = (items: T[], cmp?: Comparator<T>) => T[];
 
 interface Item {
     val: number;
@@ -19,16 +19,14 @@ let _isNativeSortStable: boolean | null = null;
 
 /**
  * Tests if the browser's native Array.sort implementation is stable.
- *
- * @remarks
- * This is an internal API. It should not be used directly in application code.
+ * Will only run once and cache the result for future calls.
  *
  * @returns True if the browser's native sort is stable
  * @internal
  */
 export function isNativeSortStable(): boolean {
     if (_isNativeSortStable == null) {
-        _isNativeSortStable = checkSortStability((a, cmp) => a.sort(cmp));
+        _isNativeSortStable = isSorterStable(nativeSort, mergeSort);
     }
     return _isNativeSortStable;
 }
@@ -45,16 +43,23 @@ export function isNativeSortStable(): boolean {
  * @returns True if the sorter maintains the relative order of equal elements (stable)
  * @internal
  */
-export function checkSortStability(sorter: Sorter<Item>, size = 40): boolean {
+export function isSorterStable(actualSorter: Sorter<Item>, expectedSorter: Sorter<Item>, size = 50): boolean {
     const arr: Item[] = [];
+    const n = Math.max(Math.floor(size / 2), 5); // ensure duplicates, and no more than 5
 
     for (let i = 0; i < size; i++) {
-        arr.push({ val: Math.floor(Math.random() * 5), index: i });
+        arr.push({ val: Math.floor(Math.random() * n), index: i });
     }
 
-    const actual = sorter(arr.slice(), descending).map(item => item.index);
-    const expected = mergeSort(arr.slice(), descending).map(item => item.index);
-    return isArrayEqual(expected, actual);
+    // test with all 4 core comparators
+    for (const cmp of [ascending, descending, preserve, reverse]) {
+        const actual = actualSorter(arr.slice(), cmp).map(item => item.index);
+        const expected = expectedSorter(arr.slice(), cmp).map(item => item.index);
+        if (!isArrayEqual(expected, actual)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**

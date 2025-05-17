@@ -377,40 +377,45 @@ TimSort excels at handling real-world data that often contains partially-ordered
 
 The library provides these key functions:
 
-| API                                        | Description                                                      |
-| ------------------------------------------ | ---------------------------------------------------------------- |
-| **🧮 Sorting Functions**                    |                                                                  |
-| `sort(arr, cmp?)`                          | In-place stable sort (native or mergeSort fallback)              |
-| `mergeSort(arr, cmp?, small?)`             | Stable in-place sort with optimization for small arrays          |
-| `quickSort(arr, cmp?, small?)`             | Fast in-place sort, not stable but generally more efficient      |
-| `timSort(arr, cmp?)`                       | Hybrid stable sort with optimal performance for real-world data  |
-| **🏷️ Enums**                                |                                                                  |
-| `Direction.Ascending`                      | Enum value representing ascending sort order                     |
-| `Direction.Descending`                     | Enum value representing descending sort order                    |
-| `Sensitivity.Base`                         | Enum value for different bases unequal, cases/accents equal      |
-| `Sensitivity.Accent`                       | Enum value for accents/bases unequal, cases equal                |
-| `Sensitivity.Case`                         | Enum value for cases/bases unequal, accents equal                |
-| `Sensitivity.Variant`                      | Enum value for all variations considered unequal                 |
-| **🧱 Basic Comparators**                    |                                                                  |
-| `ascending`                                | Compares values in ascending order                               |
-| `descending`                               | Compares values in descending order                              |
-| `preserve`                                 | Identity comparator that preserves original order                |
-| `reverse`                                  | Comparator that reverses the original order                      |
-| `dir(isAscending)`                         | Creates a comparator for a specific direction                    |
-| **🎲 Shuffle Comparators**                  |                                                                  |
-| `random(p)`                                | Creates a comparator that sorts randomly with given probability  |
-| `randomly`                                 | Pre-configured random sort comparator with p=0.5                 |
-| **🧶 String Comparators**                   |                                                                  |
-| `natural(sensitivity?)`                    | Creates a comparator for natural string sorting                  |
-| `naturally`                                | Pre-configured natural sort comparator with default settings     |
-| **🧩 Complex Comparators**                  |                                                                  |
-| `by(map, cmp?)`                            | Creates a comparator based on a property or derived value        |
-| `order(...fns)`                            | Combines multiple comparators in sequence                        |
-| `where(predicate, cmp?)`                   | Creates a comparator that prioritizes items matching a predicate |
-| `nullable(get, cmp?)`                      | Creates a comparator that prioritizes null/undefined values      |
-| `group(selector, groupOrder?, itemOrder?)` | Groups items and orders both groups and items within groups      |
-| `conditional(condition, ifTrue, ifFalse)`  | Selects between comparators based on a condition                 |
-| `flip(fn, ignore?)`                        | Flips the result of another comparator                           |
+| API                                        | Description                                                       |
+| ------------------------------------------ | ----------------------------------------------------------------- |
+| **🧮 Sorting Functions**                    |                                                                   |
+| `sort(arr, cmp?)`                          | In-place stable sort (native or mergeSort fallback)               |
+| `mergeSort(arr, cmp?, small?)`             | Stable in-place sort with optimization for small arrays           |
+| `quickSort(arr, cmp?, small?)`             | Fast in-place sort, not stable but generally more efficient       |
+| `timSort(arr, cmp?)`                       | Hybrid stable sort with optimal performance for real-world data   |
+| `nativeSort(arr, cmp?)`                    | Same as `Array.prototype.sort()`                                  |
+| `insertionSort(arr, cmp?)`                 | Stable, in-place sort efficient for small or nearly sorted arrays |
+| `insertionRangeSort(arr, lo, hi, cmp?)`    | Insertion sort for a specific range within an array               |
+| **🧰 Utility Functions**                    |                                                                   |
+| `isNativeSortStable()`                     | Checks if native sort is stable, and caches result                |
+| **🏷️ Enums**                                |                                                                   |
+| `Direction.Ascending`                      | Enum value representing ascending sort order                      |
+| `Direction.Descending`                     | Enum value representing descending sort order                     |
+| `Sensitivity.Base`                         | Enum value for different bases unequal, cases/accents equal       |
+| `Sensitivity.Accent`                       | Enum value for accents/bases unequal, cases equal                 |
+| `Sensitivity.Case`                         | Enum value for cases/bases unequal, accents equal                 |
+| `Sensitivity.Variant`                      | Enum value for all variations considered unequal                  |
+| **🧱 Basic Comparators**                    |                                                                   |
+| `ascending`                                | Compares values in ascending order                                |
+| `descending`                               | Compares values in descending order                               |
+| `preserve`                                 | Identity comparator that preserves original order                 |
+| `reverse`                                  | Comparator that reverses the original order                       |
+| `dir(isAscending)`                         | Creates a comparator for a specific direction                     |
+| **🎲 Shuffle Comparators**                  |                                                                   |
+| `random(p)`                                | Creates a comparator that sorts randomly with given probability   |
+| `randomly`                                 | Pre-configured random sort comparator with p=0.5                  |
+| **🧶 String Comparators**                   |                                                                   |
+| `natural(sensitivity?)`                    | Creates a comparator for natural string sorting                   |
+| `naturally`                                | Pre-configured natural sort comparator with default settings      |
+| **🧩 Complex Comparators**                  |                                                                   |
+| `by(map, cmp?)`                            | Creates a comparator based on a property or derived value         |
+| `order(...fns)`                            | Combines multiple comparators in sequence                         |
+| `where(predicate, cmp?)`                   | Creates a comparator that prioritizes items matching a predicate  |
+| `nullable(get, cmp?)`                      | Creates a comparator that prioritizes null/undefined values       |
+| `group(selector, groupOrder?, itemOrder?)` | Groups items and orders both groups and items within groups       |
+| `conditional(condition, ifTrue, ifFalse)`  | Selects between comparators based on a condition                  |
+| `flip(fn, ignore?)`                        | Flips the result of another comparator                            |
 
 
 Note that all **comparators** are functions in the form of `(a, b) => number`, which is omitted in the table above for brevity. For example, `ascending` is actually a function `ascending(a, b)`.

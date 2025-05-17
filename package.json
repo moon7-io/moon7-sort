@@ -1,6 +1,6 @@
 {
     "name": "@moon7/sort",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "author": "Munir Hussin <profoundseven@gmail.com>",
     "license": "MIT",
     "description": "Composable sorting functions for arrays and collections in JavaScript and TypeScript.",

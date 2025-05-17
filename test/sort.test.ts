@@ -1,5 +1,19 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from "vitest";
-import { group, sort, ascending, by, descending } from "~/index";
+import {
+    group,
+    sort,
+    ascending,
+    by,
+    descending,
+    nativeSort,
+    mergeSort,
+    quickSort,
+    timSort,
+    insertionSort,
+    preserve,
+    reverse,
+} from "~/index";
+import { type Sorter } from "~/internal";
 import * as internal from "~/internal";
 
 describe("sort", () => {
@@ -119,4 +133,91 @@ describe("sort", () => {
             expect(result).toEqual([1, 2, 3, 4]);
         });
     });
+});
+
+describe("sort algorithms", () => {
+    const sorters: { name: string; sorter: Sorter<any> }[] = [
+        { name: "nativeSort", sorter: nativeSort },
+        { name: "insertionSort", sorter: insertionSort },
+        { name: "mergeSort", sorter: mergeSort },
+        { name: "quickSort", sorter: quickSort },
+        { name: "timSort", sorter: timSort },
+    ];
+
+    for (const { name, sorter } of sorters) {
+        describe(`${name}`, () => {
+            test("empty array remains empty", () => {
+                const arr: number[] = [];
+                expect(sorter(arr)).toEqual([]);
+            });
+
+            test("single element array remains unchanged", () => {
+                const arr = [42];
+                expect(sorter(arr)).toEqual([42]);
+            });
+
+            test("sorts numbers in ascending order by default", () => {
+                const arr = [3, 1, 4, 2];
+                expect(sorter(arr)).toEqual([1, 2, 3, 4]);
+            });
+
+            test("sorts numbers in descending order with custom comparator", () => {
+                const arr = [3, 1, 4, 2];
+                expect(sorter(arr, descending)).toEqual([4, 3, 2, 1]);
+            });
+
+            test("sorts strings in alphabetical order", () => {
+                const arr = ["foo", "bar", "baz"];
+                expect(sorter(arr)).toEqual(["bar", "baz", "foo"]);
+            });
+
+            test("handles array with duplicate values", () => {
+                const arr = [3, 1, 3, 2, 1, 2];
+                expect(sorter(arr)).toEqual([1, 1, 2, 2, 3, 3]);
+            });
+
+            for (const cmp of [ascending, descending]) {
+                test(`handles large arrays (${cmp.name})`, () => {
+                    const size = 1000;
+                    const arr = Array.from({ length: size }, () => Math.floor(Math.random() * size));
+                    expect(sorter(arr.slice(), cmp)).toEqual(nativeSort(arr.slice(), cmp));
+                });
+            }
+
+            test("performs correctly on already sorted array", () => {
+                const arr = [1, 2, 3, 4, 5];
+                expect(sorter(arr)).toEqual([1, 2, 3, 4, 5]);
+            });
+
+            test("performs correctly on reverse sorted array", () => {
+                const arr = [5, 4, 3, 2, 1];
+                expect(sorter(arr)).toEqual([1, 2, 3, 4, 5]);
+            });
+        });
+    }
+});
+
+describe("stable sort algorithms", () => {
+    const sorters: { name: string; sorter: Sorter<any> }[] = [
+        { name: "nativeSort", sorter: nativeSort },
+        { name: "insertionSort", sorter: insertionSort },
+        { name: "mergeSort", sorter: mergeSort },
+        { name: "timSort", sorter: timSort },
+    ];
+
+    for (const { name, sorter } of sorters) {
+        describe(`${name}`, () => {
+            for (const cmp of [ascending, descending, preserve, reverse]) {
+                test(`handles large arrays (${cmp.name})`, () => {
+                    const size = 1000;
+                    const arr = Array.from({ length: size }, () => Math.floor(Math.random() * size));
+                    expect(sorter(arr.slice(), cmp)).toEqual(nativeSort(arr.slice(), cmp));
+                });
+
+                test("sort stability check", () => {
+                    expect(internal.isSorterStable(sorter, nativeSort)).toBe(true);
+                });
+            }
+        });
+    }
 });

@@ -1,31 +1,30 @@
 import { describe, test, expect } from "vitest";
 import { quickSort, timSort, mergeSort, nativeSort } from "~/index";
-import { checkSortStability, isNativeSortStable, isArrayEqual } from "~/internal";
+import { isSorterStable, isNativeSortStable, isArrayEqual } from "~/internal";
 
-describe("checkSortStability", () => {
+describe("isSorterStable", () => {
     test("identifies nativeSort as stable", () => {
-        const isStable = checkSortStability(nativeSort);
-        expect(isStable).toBe(true);
+        expect(isSorterStable(nativeSort, mergeSort)).toBe(true);
     });
 
-    test("identifies mergeSort as stable", () => {
-        const isStable = checkSortStability(mergeSort);
-        expect(isStable).toBe(true);
+    test("identifies mergeSort as stable (32 or less)", () => {
+        expect(isSorterStable(mergeSort, nativeSort, 16)).toBe(true);
+    });
+
+    test("identifies mergeSort as stable (more than 32)", () => {
+        expect(isSorterStable(mergeSort, nativeSort, 64)).toBe(true);
     });
 
     test("identifies timSort as stable (32 or less)", () => {
-        const isStable = checkSortStability(timSort, 31);
-        expect(isStable).toBe(true);
+        expect(isSorterStable(timSort, nativeSort, 16)).toBe(true);
     });
 
     test("identifies timSort as stable (more than 32)", () => {
-        const isStable = checkSortStability(timSort, 100);
-        expect(isStable).toBe(true);
+        expect(isSorterStable(timSort, nativeSort, 64)).toBe(true);
     });
 
     test("identifies quickSort as unstable", () => {
-        const isStable = checkSortStability(quickSort);
-        expect(isStable).toBe(false);
+        expect(isSorterStable(quickSort, nativeSort)).toBe(false);
     });
 });
 
